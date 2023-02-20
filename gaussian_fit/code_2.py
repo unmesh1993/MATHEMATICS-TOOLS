@@ -2,6 +2,7 @@ import numpy as np
 import os
 import sympy as sym
 from scipy.optimize import *
+import matplotlib.pyplot as plt
 
 def objective(x,a0,a1,a2,a3,a4):
     eq = a0 + a1*x + a2*x**2 + a3*x**3 + a4*x**4
@@ -20,17 +21,18 @@ def curve_fitting(e12,e2,a0,a1,a2,a3,a4):
 #    print (pcov)
     return a0,a1,a2,a3,a4
 
-res2='data.dat'
+res2='./data.dat'
 f=open(res2,'r')
 a=f.readlines()
 f.close
 
-for i in range(0,2):
+const=400
+
 e12=[]
 e2=[]
 e2s=[]
 for j in range(100):
-    t=j+i*(100+1)
+    t=j+0*(100+1)
     x=a[t].split()
     if float(x[1]) < const:
        e12.append(x[0])
@@ -47,9 +49,9 @@ a2=1.0
 a3=1.0
 a4=1.0
 
-a0,a1,a2,a3
-a0,a1,a2=curve_fitting(e12,e2,a0,a1,a2)
-ee2=objective(e12,a0,a1,a2)
+
+a0,a1,a2,a3,a4=curve_fitting(e12,e2,a0,a1,a2,a3,a4)
+ee2=objective(e12,a0,a1,a2,a3,a4)
 
 # Compute chi square
 r = (e2 - ee2)
@@ -65,3 +67,9 @@ gradient = sym.derive_by_array(ffo, (x))
 #hessian = sym.Matrix(1, 1, sym.derive_by_array(gradient, (x)))
 stationary_points = sym.solve(gradient, (x))
 print ('stationary points   :',stationary_points)
+
+
+plt.plot(e12,ee2, lw=2 ,mfc='white')
+
+
+plt.scatter(e12,e2, s=20)
